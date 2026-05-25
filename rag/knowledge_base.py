@@ -212,4 +212,45 @@ ROS2_KNOWLEDGE = [
         "topic": "Simulation time vs real time",
         "content": "In Gazebo simulation, always use use_sim_time:=true for all nodes. Set the clock source to Gazebo. Make sure /clock topic is being published by Gazebo and bridged to ROS2."
     },
+    # --- CODE FIXES ---
+    {
+        "topic": "create_publisher missing queue size",
+        "content": "In ROS2, create_publisher always requires 3 arguments: message type, topic name, and queue size. Correct usage: self.publisher = self.create_publisher(String, 'topic_name', 10). Missing queue_size will cause a TypeError."
+    },
+    {
+        "topic": "create_subscription missing arguments",
+        "content": "In ROS2, create_subscription requires 4 arguments: message type, topic name, callback function, and queue size. Correct usage: self.subscription = self.create_subscription(String, 'topic', self.callback, 10)."
+    },
+    {
+        "topic": "rclpy.spin missing node argument",
+        "content": "In ROS2, rclpy.spin() requires the node object as argument. Wrong: rclpy.spin(). Correct: rclpy.spin(node). Same for rclpy.spin_once(node)."
+    },
+    {
+        "topic": "rclpy.init missing args",
+        "content": "In ROS2, rclpy.init() should be called with args=None. Correct usage: rclpy.init(args=None). Or pass sys.argv: rclpy.init(args=sys.argv)."
+    },
+    {
+        "topic": "Node super().__init__ missing name",
+        "content": "In ROS2, when creating a Node class, super().__init__() must include the node name string. Wrong: super().__init__(). Correct: super().__init__('my_node_name')."
+    },
+    {
+        "topic": "msg.data wrong attribute",
+        "content": "In ROS2 std_msgs, String message uses .data attribute not .text or .message. Wrong: msg.text = 'hello'. Correct: msg.data = 'hello'. For Int32: msg.data = 42."
+    },
+    {
+        "topic": "timer callback name mismatch",
+        "content": "In ROS2, the timer callback name passed to create_timer must exactly match the method name. Wrong: self.create_timer(0.5, self.timerCallback) with method def timer_callback. Correct: make sure both names match exactly."
+    },
+    {
+        "topic": "missing import rclpy",
+        "content": "Every ROS2 Python node must import rclpy and the Node class. Required imports: import rclpy, from rclpy.node import Node. Also import message types like: from std_msgs.msg import String."
+    },
+    {
+        "topic": "publisher publish wrong usage",
+        "content": "In ROS2, to publish a message, create the message object first then publish. Correct pattern: msg = String(); msg.data = 'hello'; self.publisher.publish(msg). Do not pass raw strings directly to publish()."
+    },
+    {
+        "topic": "ROS2 node not shutting down cleanly",
+        "content": "In ROS2, always call rclpy.shutdown() after rclpy.spin() ends. Use try/finally to ensure cleanup. Pattern: try: rclpy.spin(node) finally: node.destroy_node(); rclpy.shutdown()."
+    },
 ]

@@ -72,7 +72,7 @@ def search_knowledge_base(query: str) -> str:
 llm = ChatOllama(
     model="qwen2.5:3b",
     temperature=0,
-    num_predict=256,
+    num_predict=512,
     extra_body={"think": False}
 )
 

@@ -12,12 +12,29 @@ from rag.rag_engine import search_ros2_knowledge
 
 def ask_with_rag(question: str) -> str:
     knowledge = search_ros2_knowledge(question)
-    enhanced_question = f"""User question: {question}
+
+    # Detect if it's a code fixing request
+    code_keywords = ["fix", "error", "broken", "wrong", "correct", "debug"]
+    is_code_request = any(word in question.lower() for word in code_keywords)
+
+    if is_code_request:
+        enhanced_question = f"""You are a ROS2 code expert. The user wants you to fix their code.
+
+User request: {question}
+
+Relevant knowledge:
+{knowledge}
+
+IMPORTANT: Focus on fixing the code only. Do NOT check live robot data.
+Show the corrected code and explain each fix clearly."""
+    else:
+        enhanced_question = f"""User question: {question}
 
 Relevant knowledge base information:
 {knowledge}
 
 Use the above knowledge base information to help answer. Also check live robot data if needed."""
+
     return ask_ros2(enhanced_question)
 
 def main():
@@ -48,4 +65,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
