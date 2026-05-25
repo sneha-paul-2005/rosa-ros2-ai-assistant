@@ -40,12 +40,13 @@ Use the above knowledge base information to help answer. Also check live robot d
 def main():
     if len(sys.argv) > 1:
         question = " ".join(sys.argv[1:])
-        print(f"\n🤖 Thinking...\n")
+        print(f"\n🤖 ROSA is thinking...\n")
         response = ask_with_rag(question)
-        print(f"💡 {response}\n")
+        print(f"\n🤖 ROSA: {response}\n")
     else:
-        print("\n🤖 ROS2 AI Troubleshooter")
+        print("\n🤖 ROSA — ROS2 AI Assistant")
         print("=" * 40)
+        print("Your intelligent ROS2 companion!")
         print("Type your question or 'exit' to quit\n")
 
         while True:

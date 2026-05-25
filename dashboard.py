@@ -20,8 +20,8 @@ st.set_page_config(
 )
 
 # Title
-st.title("🤖 ROS2 AI Troubleshooter")
-st.caption("AI-powered ROS2 diagnostics and troubleshooting assistant")
+st.title("🤖 ROSA — ROS2 AI Assistant")
+st.caption("Your intelligent ROS2 companion — diagnose, fix, and monitor your robot")
 
 # Sidebar — Robot Status
 with st.sidebar:

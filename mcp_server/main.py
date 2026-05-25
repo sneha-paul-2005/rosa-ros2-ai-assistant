@@ -2,7 +2,7 @@ from fastapi import FastAPI
 import subprocess
 import datetime
 
-app = FastAPI(title="ROS2 MCP Server")
+app = FastAPI(title="ROSA MCP Server")
 
 @app.get("/")
 def root():
