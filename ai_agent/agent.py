@@ -1,6 +1,7 @@
 from langchain_ollama import ChatOllama
 from langgraph.prebuilt import create_react_agent
 from langchain_core.tools import tool
+from rag.rag_engine import search_ros2_knowledge
 import requests
 
 MCP_URL = "http://localhost:8000"
@@ -59,6 +60,14 @@ def get_full_health_check() -> str:
     except Exception as e:
         return f"Error: {e}"
 
+@tool
+def search_knowledge_base(query: str) -> str:
+    """Search the ROS2 knowledge base for known errors, fixes, and documentation."""
+    try:
+        return search_ros2_knowledge(query)
+    except Exception as e:
+        return f"Error: {e}"
+
 # Setup LLM — thinking disabled, fast mode
 llm = ChatOllama(
     model="qwen2.5:3b",
@@ -73,10 +82,20 @@ tools = [
     get_lidar_snapshot,
     get_navigation_status,
     get_tf_tree,
-    get_full_health_check
+    get_full_health_check,
+    search_knowledge_base
 ]
 
-agent = create_react_agent(llm, tools)
+system_prompt = """You are a ROS2 AI Troubleshooter assistant.
+
+When answering questions:
+1. ALWAYS search the knowledge base FIRST using search_knowledge_base tool
+2. THEN check live robot data if needed
+3. Give clear, specific answers based on both knowledge base and live data
+
+Be concise and helpful."""
+
+agent = create_react_agent(llm, tools, prompt=system_prompt)
 
 def ask_ros2(question: str) -> str:
     """Send a question to the ROS2 AI agent."""

@@ -1,21 +1,31 @@
 #!/usr/bin/env python3
-import sys
 import os
+os.environ["TRANSFORMERS_VERBOSITY"] = "error"
+os.environ["HF_HUB_DISABLE_PROGRESS_BARS"] = "1"
+os.environ["HF_HUB_OFFLINE"] = "1"
 
-# Add project to path
+import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from ai_agent.agent import ask_ros2
+from rag.rag_engine import search_ros2_knowledge
+
+def ask_with_rag(question: str) -> str:
+    knowledge = search_ros2_knowledge(question)
+    enhanced_question = f"""User question: {question}
+
+Relevant knowledge base information:
+{knowledge}
+
+Use the above knowledge base information to help answer. Also check live robot data if needed."""
+    return ask_ros2(enhanced_question)
 
 def main():
-    # If question passed as argument
     if len(sys.argv) > 1:
         question = " ".join(sys.argv[1:])
         print(f"\n🤖 Thinking...\n")
-        response = ask_ros2(question)
+        response = ask_with_rag(question)
         print(f"💡 {response}\n")
-
-    # Interactive mode
     else:
         print("\n🤖 ROS2 AI Troubleshooter")
         print("=" * 40)
@@ -30,7 +40,7 @@ def main():
                 if not question:
                     continue
                 print("\n🤖 Thinking...\n")
-                response = ask_ros2(question)
+                response = ask_with_rag(question)
                 print(f"💡 {response}\n")
             except KeyboardInterrupt:
                 print("\nGoodbye! 🚀")
@@ -38,3 +48,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
